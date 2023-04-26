@@ -1,0 +1,342 @@
+<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
+   <div class="container-fluid">
+     
+ 
+     
+   </div>
+ </div>
+ <!-- Page content -->
+ <div class="container-fluid mt--7">
+   <div class="row">
+     <div class="col">
+       <div class="card shadow border-0">
+         <div id="map-canvas" class="map-canvas" data-lat="40.748817" data-lng="-73.985428" style="height: 900px;">
+
+
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+   <a class="navbar-brand" style="color:rgb(153, 19, 19);">Equipement Manager</a>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+   <ul class="navbar-nav mr-auto">
+       <li class="nav-item active">
+          <a class="nav-link" (click)="onOpenModal(null, 'add')">Add Equipement <span class="sr-only">(current)</span></a>
+       </li>
+   </ul>
+   <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchEquipements(key.value)" #key="ngModel" ngModel
+       name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search Equipement..." required>
+   </form>
+ </div>
+</nav>
+  
+ <div class="container" id="main-container">
+   <div class="row">
+     <div *ngFor="let equipement of equipements" class="col-md-6 col-xl-3">
+        <div class="card m-b-30">
+           <div class="card-body row">
+              <div class="col-6">
+                 <h2>{{equipement?.id}}</h2>
+              </div>
+              <div class="col-6 card-title align-self-center mb-0">
+                 <h5>{{equipement?.name}}</h5>
+                 <p>{{equipement?.state}}</p>
+              </div>
+           </div>
+           <ul class="list-group list-group-flush">
+              <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{equipement?.name}}</li>
+              <li class="list-group-item"><i class="fa fa-phone float-right"></i>State : {{equipement?.state}}</li>
+           </ul>
+           <div class="card-body">
+              <div class="float-right btn-group btn-group-sm">
+                 <a (click)="onOpenModal(equipement, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit">Edit<i class=""></i></a>
+                 <a (click)="onOpenModal(equipement, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+              </div>
+           </div>
+
+        </div>
+     </div>
+   </div>
+ 
+ <!-- Add Equipement Modal -->
+ <div class="modal fade" id="addEquipementModal" tabindex="-1" role="dialog" aria-labelledby="addEquipementModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="addEquipementModalLabel">Add Equipement</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+
+           <form #addForm="ngForm" (ngSubmit)="onAddEquipement(addForm)">
+           <div class="form-group">
+
+              <label for="name">name</label>
+              <input type="text" ngModel name="name" 
+              class="form-control" id="name" placeholder="name" required>
+           </div>
+           <div class="form-group">
+              <label for="state">state</label>
+              <input type="text" ngModel name="state" 
+              class="form-control" id="state" placeholder="state" required>
+           </div>
+           <div class="modal-footer">
+              <button type="button" id="add-equipement-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+           </div>
+           </form>
+        </div>
+     </div>
+   </div>
+   </div>
+ 
+ <!-- Edit Modal -->
+ <div class="modal fade" id="updateEquipementModal" tabindex="-1" role="dialog" aria-labelledby="equipementEditModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="updateEquipementModalLabel">Edit Equipement {{editEquipement?.name}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #editForm="ngForm">
+               <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" ngModel="{{editEquipement?.name}}" name="name" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name">
+               </div>
+               <input type="hidden" ngModel="{{editEquipement?.id}}" name="id" class="form-control" id="id" placeholder="id">
+               <input type="hidden" ngModel="{{editEquipement?.name}}" name="userCode" class="form-control" id="userCode" placeholder="name">
+               
+               <div class="form-group">
+                  <label for="state">state</label>
+                  <input type="text" ngModel="{{editEquipement?.state}}" name="state" class="form-control" id="email" placeholder="state">
+               </div>
+               <div class="form-group">
+                 <label for="name">name</label>
+                 <input type="text" ngModel="{{editEquipement?.name}}" name="name" class="form-control" id="email" placeholder="name">
+              </div>
+               
+               <div class="modal-footer">
+                  <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                  <button (click)="onUpdateEquipement(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+ </div>
+ 
+ <!-- Delete Modal -->
+ <div class="modal fade" id="deleteEquipementModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="deleteModelLabel">Delete Equipement</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Are you sure you want to delete equipement {{deleteEquipement?.name}}?</p>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+               <button (click)="onDeleteEquipement(deleteEquipement?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </div>
+ </div>
+ 
+ <!-- Notification for no employees -->
+ <div *ngIf="equipements?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+   <div class="alert alert-info" role="alert">
+     <h4 class="alert-heading">NO EQUIPEMENTS!</h4>
+     <p>No EQUIPEMENTS were found.</p>
+   </div>
+   </div>
+         
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+
+
+
+
+
+
+
+
+
+
+
+ <div class="container-fluid mt--7">
+   <div class="row">
+     <div class="col">
+       <div class="card shadow border-0">
+         <div id="map-canvas" class="map-canvas" data-lat="40.748817" data-lng="-73.985428" style="height: 900px;">
+
+
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+   <a class="navbar-brand" style="color:rgb(153, 19, 19);">Salle Manager</a>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+   <ul class="navbar-nav mr-auto">
+       <li class="nav-item active">
+          <a class="nav-link" (click)="onOpenModalSalle(null, 'add')">Add Salle <span class="sr-only">(current)</span></a>
+       </li>
+   </ul>
+   <form class="form-inline my-2 my-lg-0">
+      <input type="search" (ngModelChange)="searchSalles(key.value)" #key="ngModel" ngModel
+       name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search Salle..." required>
+   </form>
+ </div>
+</nav>
+  
+ <div class="container" id="main-containerr">
+   <div class="row">
+     <div *ngFor="let salle of salles" class="col-md-6 col-xl-3">
+        <div class="card m-b-30">
+           <div class="card-body row">
+              <div class="col-6">
+                 <h2>{{salle?.id}}</h2>
+              </div>
+              <div class="col-6 card-title align-self-center mb-0">
+                 <h5>numero : {{salle?.num}}</h5>
+                 <p>id : {{salle?.id}}</p>
+                 <p>capacite : {{salle?.capacite}}</p>
+
+              </div>
+           </div>
+           <ul class="list-group list-group-flush">
+              <li class="list-group-item"><i class="fa fa-phone float-right"></i>isAvailable : {{Availabilite(salle)}}</li>
+              <li class="list-group-item"><i class="fa fa-phone float-right"></i>state : {{salle?.state}}</li>
+           </ul>
+           <div class="card-body">
+              <div class="float-right btn-group btn-group-sm">
+                 <a (click)="onOpenModalSalle(salle, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit">Edit<i class=""></i></a>
+                 <a (click)="onOpenModalSalle(salle, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+              </div>
+           </div>
+
+        </div>
+     </div>
+   </div>
+ 
+ <!-- Add Salle Modal -->
+ <div class="modal fade" id="addSalleModal" tabindex="-1" role="dialog" aria-labelledby="addSalleModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="addSalleModalLabel">Add Salle</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+
+           <form #addForm="ngForm" (ngSubmit)="onAddSalle(addForm)">
+         
+           <div class="form-group">
+              <label for="state">state</label>
+              <input type="text" ngModel state="state" 
+              class="form-control" id="state" placeholder="state" required>
+           </div>
+           <div class="form-group">
+            <label for="capacite">capacite</label>
+            <input type="text" ngModel capacite="state" 
+            class="form-control" id="capacite" placeholder="capacite" required>
+         </div>
+         <div class="form-group">
+            <label for="num">num</label>
+            <input type="text" ngModel num="num" 
+            class="form-control" id="num" placeholder="num" required>
+         </div>
+           <div class="modal-footer">
+              <button type="button" id="add-salle-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+           </div>
+           </form>
+        </div>
+     </div>
+   </div>
+   </div>
+ 
+ <!-- Edit Modal -->
+ <div class="modal fade" id="updateEquipementModal" tabindex="-1" role="dialog" aria-labelledby="equipementEditModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="updateEquipementModalLabel">Edit Equipement {{editEquipement?.name}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form #editForm="ngForm">
+               <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" ngModel="{{editEquipement?.name}}" name="name" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name">
+               </div>
+               <input type="hidden" ngModel="{{editEquipement?.id}}" name="id" class="form-control" id="id" placeholder="id">
+               <input type="hidden" ngModel="{{editEquipement?.name}}" name="userCode" class="form-control" id="userCode" placeholder="name">
+               
+               <div class="form-group">
+                  <label for="state">state</label>
+                  <input type="text" ngModel="{{editEquipement?.state}}" name="state" class="form-control" id="email" placeholder="state">
+               </div>
+               <div class="form-group">
+                 <label for="name">name</label>
+                 <input type="text" ngModel="{{editEquipement?.name}}" name="name" class="form-control" id="email" placeholder="name">
+              </div>
+               
+               <div class="modal-footer">
+                  <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                  <button (click)="onUpdateEquipement(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+ </div>
+ 
+ <!-- Delete Modal -->
+ <div class="modal fade" id="deleteEquipementModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="deleteModelLabel">Delete Equipement</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Are you sure you want to delete equipement {{deleteEquipement?.name}}?</p>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+               <button (click)="onDeleteEquipement(deleteEquipement?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </div>
+ </div>
+ 
+ <!-- Notification for no employees -->
+ <div *ngIf="salleAv?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+   <div class="alert alert-info" role="alert">
+     <h4 class="alert-heading">NO EQUIPEMENTS!</h4>
+     <p>No Salles were found.</p>
+   </div>
+   </div>
+         
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
